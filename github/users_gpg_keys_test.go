@@ -6,7 +6,6 @@
 package github
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -24,7 +23,7 @@ func TestUsersService_ListGPGKeys(t *testing.T) {
 		fmt.Fprint(w, `[{"id":1,"primary_key_id":2}]`)
 	})
 
-	keys, _, err := client.Users.ListGPGKeys(context.Background())
+	keys, _, err := client.Users.ListGPGKeys()
 	if err != nil {
 		t.Errorf("Users.ListGPGKeys returned error: %v", err)
 	}
@@ -45,7 +44,7 @@ func TestUsersService_GetGPGKey(t *testing.T) {
 		fmt.Fprint(w, `{"id":1}`)
 	})
 
-	key, _, err := client.Users.GetGPGKey(context.Background(), 1)
+	key, _, err := client.Users.GetGPGKey(1)
 	if err != nil {
 		t.Errorf("Users.GetGPGKey returned error: %v", err)
 	}
@@ -84,7 +83,7 @@ mQINBFcEd9kBEACo54TDbGhKlXKWMvJgecEUKPPcv7XdnpKdGb3LRw5MvFwT0V0f
 		fmt.Fprint(w, `{"id":1}`)
 	})
 
-	gpgKey, _, err := client.Users.CreateGPGKey(context.Background(), input)
+	gpgKey, _, err := client.Users.CreateGPGKey(input)
 	if err != nil {
 		t.Errorf("Users.GetGPGKey returned error: %v", err)
 	}
@@ -104,7 +103,7 @@ func TestUsersService_DeleteGPGKey(t *testing.T) {
 		testHeader(t, r, "Accept", mediaTypeGitSigningPreview)
 	})
 
-	_, err := client.Users.DeleteGPGKey(context.Background(), 1)
+	_, err := client.Users.DeleteGPGKey(1)
 	if err != nil {
 		t.Errorf("Users.DeleteGPGKey returned error: %v", err)
 	}

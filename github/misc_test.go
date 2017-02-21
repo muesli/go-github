@@ -6,7 +6,6 @@
 package github
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -34,7 +33,7 @@ func TestMarkdown(t *testing.T) {
 		fmt.Fprint(w, `<h1>text</h1>`)
 	})
 
-	md, _, err := client.Markdown(context.Background(), "# text #", &MarkdownOptions{
+	md, _, err := client.Markdown("# text #", &MarkdownOptions{
 		Mode:    "gfm",
 		Context: "google/go-github",
 	})
@@ -56,7 +55,7 @@ func TestListEmojis(t *testing.T) {
 		fmt.Fprint(w, `{"+1": "+1.png"}`)
 	})
 
-	emoji, _, err := client.ListEmojis(context.Background())
+	emoji, _, err := client.ListEmojis()
 	if err != nil {
 		t.Errorf("ListEmojis returned error: %v", err)
 	}
@@ -76,7 +75,7 @@ func TestAPIMeta(t *testing.T) {
 		fmt.Fprint(w, `{"hooks":["h"], "git":["g"], "pages":["p"], "verifiable_password_authentication": true}`)
 	})
 
-	meta, _, err := client.APIMeta(context.Background())
+	meta, _, err := client.APIMeta()
 	if err != nil {
 		t.Errorf("APIMeta returned error: %v", err)
 	}
@@ -106,7 +105,7 @@ func TestOctocat(t *testing.T) {
 		fmt.Fprint(w, output)
 	})
 
-	got, _, err := client.Octocat(context.Background(), input)
+	got, _, err := client.Octocat(input)
 	if err != nil {
 		t.Errorf("Octocat returned error: %v", err)
 	}
@@ -128,7 +127,7 @@ func TestZen(t *testing.T) {
 		fmt.Fprint(w, output)
 	})
 
-	got, _, err := client.Zen(context.Background())
+	got, _, err := client.Zen()
 	if err != nil {
 		t.Errorf("Zen returned error: %v", err)
 	}
@@ -154,7 +153,7 @@ func TestListServiceHooks(t *testing.T) {
 		}]`)
 	})
 
-	hooks, _, err := client.ListServiceHooks(context.Background())
+	hooks, _, err := client.ListServiceHooks()
 	if err != nil {
 		t.Errorf("ListServiceHooks returned error: %v", err)
 	}

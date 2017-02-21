@@ -6,7 +6,6 @@
 package github
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"reflect"
@@ -28,7 +27,7 @@ func TestIntegrationService_ListRepos(t *testing.T) {
 	})
 
 	opt := &ListOptions{Page: 1, PerPage: 2}
-	repositories, _, err := client.Integrations.ListRepos(context.Background(), opt)
+	repositories, _, err := client.Integrations.ListRepos(opt)
 	if err != nil {
 		t.Errorf("Integration.ListRepos returned error: %v", err)
 	}

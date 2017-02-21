@@ -5,8 +5,6 @@
 
 package github
 
-import "context"
-
 // Installation represents a GitHub integration installation.
 type Installation struct {
 	ID              *int    `json:"id,omitempty"`
@@ -22,7 +20,7 @@ func (i Installation) String() string {
 // ListRepos lists the repositories that the current installation has access to.
 //
 // GitHub API docs: https://developer.github.com/v3/integrations/installations/#list-repositories
-func (s *IntegrationsService) ListRepos(ctx context.Context, opt *ListOptions) ([]*Repository, *Response, error) {
+func (s *IntegrationsService) ListRepos(opt *ListOptions) ([]*Repository, *Response, error) {
 	u, err := addOptions("installation/repositories", opt)
 	if err != nil {
 		return nil, nil, err
@@ -39,7 +37,7 @@ func (s *IntegrationsService) ListRepos(ctx context.Context, opt *ListOptions) (
 	var r struct {
 		Repositories []*Repository `json:"repositories"`
 	}
-	resp, err := s.client.Do(ctx, req, &r)
+	resp, err := s.client.Do(req, &r)
 	if err != nil {
 		return nil, resp, err
 	}

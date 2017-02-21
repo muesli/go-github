@@ -6,7 +6,6 @@
 package github
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -26,7 +25,7 @@ func TestRepositoriesService_ListProjects(t *testing.T) {
 	})
 
 	opt := &ListOptions{Page: 2}
-	projects, _, err := client.Repositories.ListProjects(context.Background(), "o", "r", opt)
+	projects, _, err := client.Repositories.ListProjects("o", "r", opt)
 	if err != nil {
 		t.Errorf("Repositories.ListProjects returned error: %v", err)
 	}
@@ -56,7 +55,7 @@ func TestRepositoriesService_CreateProject(t *testing.T) {
 		fmt.Fprint(w, `{"id":1}`)
 	})
 
-	project, _, err := client.Repositories.CreateProject(context.Background(), "o", "r", input)
+	project, _, err := client.Repositories.CreateProject("o", "r", input)
 	if err != nil {
 		t.Errorf("Repositories.CreateProject returned error: %v", err)
 	}

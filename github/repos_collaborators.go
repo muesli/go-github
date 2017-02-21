@@ -5,15 +5,12 @@
 
 package github
 
-import (
-	"context"
-	"fmt"
-)
+import "fmt"
 
 // ListCollaborators lists the Github users that have access to the repository.
 //
 // GitHub API docs: https://developer.github.com/v3/repos/collaborators/#list
-func (s *RepositoriesService) ListCollaborators(ctx context.Context, owner, repo string, opt *ListOptions) ([]*User, *Response, error) {
+func (s *RepositoriesService) ListCollaborators(owner, repo string, opt *ListOptions) ([]*User, *Response, error) {
 	u := fmt.Sprintf("repos/%v/%v/collaborators", owner, repo)
 	u, err := addOptions(u, opt)
 	if err != nil {
@@ -26,7 +23,7 @@ func (s *RepositoriesService) ListCollaborators(ctx context.Context, owner, repo
 	}
 
 	var users []*User
-	resp, err := s.client.Do(ctx, req, &users)
+	resp, err := s.client.Do(req, &users)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -40,14 +37,14 @@ func (s *RepositoriesService) ListCollaborators(ctx context.Context, owner, repo
 // is not a GitHub user.
 //
 // GitHub API docs: https://developer.github.com/v3/repos/collaborators/#get
-func (s *RepositoriesService) IsCollaborator(ctx context.Context, owner, repo, user string) (bool, *Response, error) {
+func (s *RepositoriesService) IsCollaborator(owner, repo, user string) (bool, *Response, error) {
 	u := fmt.Sprintf("repos/%v/%v/collaborators/%v", owner, repo, user)
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return false, nil, err
 	}
 
-	resp, err := s.client.Do(ctx, req, nil)
+	resp, err := s.client.Do(req, nil)
 	isCollab, err := parseBoolResponse(err)
 	return isCollab, resp, err
 }
@@ -63,7 +60,7 @@ type RepositoryPermissionLevel struct {
 
 // GetPermissionLevel retrieves the specific permission level a collaborator has for a given repository.
 // GitHub API docs: https://developer.github.com/v3/repos/collaborators/#review-a-users-permission-level
-func (s *RepositoriesService) GetPermissionLevel(ctx context.Context, owner, repo, user string) (*RepositoryPermissionLevel, *Response, error) {
+func (s *RepositoriesService) GetPermissionLevel(owner, repo, user string) (*RepositoryPermissionLevel, *Response, error) {
 	u := fmt.Sprintf("repos/%v/%v/collaborators/%v/permission", owner, repo, user)
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
@@ -74,7 +71,7 @@ func (s *RepositoriesService) GetPermissionLevel(ctx context.Context, owner, rep
 	req.Header.Set("Accept", mediaTypeOrgMembershipPreview)
 
 	rpl := new(RepositoryPermissionLevel)
-	resp, err := s.client.Do(ctx, req, rpl)
+	resp, err := s.client.Do(req, rpl)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -97,7 +94,7 @@ type RepositoryAddCollaboratorOptions struct {
 // AddCollaborator adds the specified Github user as collaborator to the given repo.
 //
 // GitHub API docs: https://developer.github.com/v3/repos/collaborators/#add-user-as-a-collaborator
-func (s *RepositoriesService) AddCollaborator(ctx context.Context, owner, repo, user string, opt *RepositoryAddCollaboratorOptions) (*Response, error) {
+func (s *RepositoriesService) AddCollaborator(owner, repo, user string, opt *RepositoryAddCollaboratorOptions) (*Response, error) {
 	u := fmt.Sprintf("repos/%v/%v/collaborators/%v", owner, repo, user)
 	req, err := s.client.NewRequest("PUT", u, opt)
 	if err != nil {
@@ -107,18 +104,18 @@ func (s *RepositoriesService) AddCollaborator(ctx context.Context, owner, repo, 
 	// TODO: remove custom Accept header when this API fully launches.
 	req.Header.Set("Accept", mediaTypeRepositoryInvitationsPreview)
 
-	return s.client.Do(ctx, req, nil)
+	return s.client.Do(req, nil)
 }
 
 // RemoveCollaborator removes the specified Github user as collaborator from the given repo.
 // Note: Does not return error if a valid user that is not a collaborator is removed.
 //
 // GitHub API docs: https://developer.github.com/v3/repos/collaborators/#remove-collaborator
-func (s *RepositoriesService) RemoveCollaborator(ctx context.Context, owner, repo, user string) (*Response, error) {
+func (s *RepositoriesService) RemoveCollaborator(owner, repo, user string) (*Response, error) {
 	u := fmt.Sprintf("repos/%v/%v/collaborators/%v", owner, repo, user)
 	req, err := s.client.NewRequest("DELETE", u, nil)
 	if err != nil {
 		return nil, err
 	}
-	return s.client.Do(ctx, req, nil)
+	return s.client.Do(req, nil)
 }

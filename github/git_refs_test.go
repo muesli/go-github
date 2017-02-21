@@ -6,7 +6,6 @@
 package github
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -32,7 +31,7 @@ func TestGitService_GetRef(t *testing.T) {
 		  }`)
 	})
 
-	ref, _, err := client.Git.GetRef(context.Background(), "o", "r", "refs/heads/b")
+	ref, _, err := client.Git.GetRef("o", "r", "refs/heads/b")
 	if err != nil {
 		t.Errorf("Git.GetRef returned error: %v", err)
 	}
@@ -51,7 +50,7 @@ func TestGitService_GetRef(t *testing.T) {
 	}
 
 	// without 'refs/' prefix
-	if _, _, err := client.Git.GetRef(context.Background(), "o", "r", "heads/b"); err != nil {
+	if _, _, err := client.Git.GetRef("o", "r", "heads/b"); err != nil {
 		t.Errorf("Git.GetRef returned error: %v", err)
 	}
 }
@@ -85,7 +84,7 @@ func TestGitService_ListRefs(t *testing.T) {
 		  ]`)
 	})
 
-	refs, _, err := client.Git.ListRefs(context.Background(), "o", "r", nil)
+	refs, _, err := client.Git.ListRefs("o", "r", nil)
 	if err != nil {
 		t.Errorf("Git.ListRefs returned error: %v", err)
 	}
@@ -126,7 +125,7 @@ func TestGitService_ListRefs_options(t *testing.T) {
 	})
 
 	opt := &ReferenceListOptions{Type: "t", ListOptions: ListOptions{Page: 2}}
-	refs, _, err := client.Git.ListRefs(context.Background(), "o", "r", opt)
+	refs, _, err := client.Git.ListRefs("o", "r", opt)
 	if err != nil {
 		t.Errorf("Git.ListRefs returned error: %v", err)
 	}
@@ -166,7 +165,7 @@ func TestGitService_CreateRef(t *testing.T) {
 		  }`)
 	})
 
-	ref, _, err := client.Git.CreateRef(context.Background(), "o", "r", &Reference{
+	ref, _, err := client.Git.CreateRef("o", "r", &Reference{
 		Ref: String("refs/heads/b"),
 		Object: &GitObject{
 			SHA: String("aa218f56b14c9653891f9e74264a383fa43fefbd"),
@@ -190,7 +189,7 @@ func TestGitService_CreateRef(t *testing.T) {
 	}
 
 	// without 'refs/' prefix
-	_, _, err = client.Git.CreateRef(context.Background(), "o", "r", &Reference{
+	_, _, err = client.Git.CreateRef("o", "r", &Reference{
 		Ref: String("heads/b"),
 		Object: &GitObject{
 			SHA: String("aa218f56b14c9653891f9e74264a383fa43fefbd"),
@@ -230,7 +229,7 @@ func TestGitService_UpdateRef(t *testing.T) {
 		  }`)
 	})
 
-	ref, _, err := client.Git.UpdateRef(context.Background(), "o", "r", &Reference{
+	ref, _, err := client.Git.UpdateRef("o", "r", &Reference{
 		Ref:    String("refs/heads/b"),
 		Object: &GitObject{SHA: String("aa218f56b14c9653891f9e74264a383fa43fefbd")},
 	}, true)
@@ -252,7 +251,7 @@ func TestGitService_UpdateRef(t *testing.T) {
 	}
 
 	// without 'refs/' prefix
-	_, _, err = client.Git.UpdateRef(context.Background(), "o", "r", &Reference{
+	_, _, err = client.Git.UpdateRef("o", "r", &Reference{
 		Ref:    String("heads/b"),
 		Object: &GitObject{SHA: String("aa218f56b14c9653891f9e74264a383fa43fefbd")},
 	}, true)
@@ -269,13 +268,13 @@ func TestGitService_DeleteRef(t *testing.T) {
 		testMethod(t, r, "DELETE")
 	})
 
-	_, err := client.Git.DeleteRef(context.Background(), "o", "r", "refs/heads/b")
+	_, err := client.Git.DeleteRef("o", "r", "refs/heads/b")
 	if err != nil {
 		t.Errorf("Git.DeleteRef returned error: %v", err)
 	}
 
 	// without 'refs/' prefix
-	if _, err := client.Git.DeleteRef(context.Background(), "o", "r", "heads/b"); err != nil {
+	if _, err := client.Git.DeleteRef("o", "r", "heads/b"); err != nil {
 		t.Errorf("Git.DeleteRef returned error: %v", err)
 	}
 }

@@ -6,7 +6,6 @@
 package github
 
 import (
-	"context"
 	"fmt"
 	"strings"
 )
@@ -48,7 +47,7 @@ type updateRefRequest struct {
 // GetRef fetches the Reference object for a given Git ref.
 //
 // GitHub API docs: https://developer.github.com/v3/git/refs/#get-a-reference
-func (s *GitService) GetRef(ctx context.Context, owner string, repo string, ref string) (*Reference, *Response, error) {
+func (s *GitService) GetRef(owner string, repo string, ref string) (*Reference, *Response, error) {
 	ref = strings.TrimPrefix(ref, "refs/")
 	u := fmt.Sprintf("repos/%v/%v/git/refs/%v", owner, repo, ref)
 	req, err := s.client.NewRequest("GET", u, nil)
@@ -57,7 +56,7 @@ func (s *GitService) GetRef(ctx context.Context, owner string, repo string, ref 
 	}
 
 	r := new(Reference)
-	resp, err := s.client.Do(ctx, req, r)
+	resp, err := s.client.Do(req, r)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -76,7 +75,7 @@ type ReferenceListOptions struct {
 // ListRefs lists all refs in a repository.
 //
 // GitHub API docs: https://developer.github.com/v3/git/refs/#get-all-references
-func (s *GitService) ListRefs(ctx context.Context, owner, repo string, opt *ReferenceListOptions) ([]*Reference, *Response, error) {
+func (s *GitService) ListRefs(owner, repo string, opt *ReferenceListOptions) ([]*Reference, *Response, error) {
 	var u string
 	if opt != nil && opt.Type != "" {
 		u = fmt.Sprintf("repos/%v/%v/git/refs/%v", owner, repo, opt.Type)
@@ -94,7 +93,7 @@ func (s *GitService) ListRefs(ctx context.Context, owner, repo string, opt *Refe
 	}
 
 	var rs []*Reference
-	resp, err := s.client.Do(ctx, req, &rs)
+	resp, err := s.client.Do(req, &rs)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -105,7 +104,7 @@ func (s *GitService) ListRefs(ctx context.Context, owner, repo string, opt *Refe
 // CreateRef creates a new ref in a repository.
 //
 // GitHub API docs: https://developer.github.com/v3/git/refs/#create-a-reference
-func (s *GitService) CreateRef(ctx context.Context, owner string, repo string, ref *Reference) (*Reference, *Response, error) {
+func (s *GitService) CreateRef(owner string, repo string, ref *Reference) (*Reference, *Response, error) {
 	u := fmt.Sprintf("repos/%v/%v/git/refs", owner, repo)
 	req, err := s.client.NewRequest("POST", u, &createRefRequest{
 		// back-compat with previous behavior that didn't require 'refs/' prefix
@@ -117,7 +116,7 @@ func (s *GitService) CreateRef(ctx context.Context, owner string, repo string, r
 	}
 
 	r := new(Reference)
-	resp, err := s.client.Do(ctx, req, r)
+	resp, err := s.client.Do(req, r)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -128,7 +127,7 @@ func (s *GitService) CreateRef(ctx context.Context, owner string, repo string, r
 // UpdateRef updates an existing ref in a repository.
 //
 // GitHub API docs: https://developer.github.com/v3/git/refs/#update-a-reference
-func (s *GitService) UpdateRef(ctx context.Context, owner string, repo string, ref *Reference, force bool) (*Reference, *Response, error) {
+func (s *GitService) UpdateRef(owner string, repo string, ref *Reference, force bool) (*Reference, *Response, error) {
 	refPath := strings.TrimPrefix(*ref.Ref, "refs/")
 	u := fmt.Sprintf("repos/%v/%v/git/refs/%v", owner, repo, refPath)
 	req, err := s.client.NewRequest("PATCH", u, &updateRefRequest{
@@ -140,7 +139,7 @@ func (s *GitService) UpdateRef(ctx context.Context, owner string, repo string, r
 	}
 
 	r := new(Reference)
-	resp, err := s.client.Do(ctx, req, r)
+	resp, err := s.client.Do(req, r)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -151,7 +150,7 @@ func (s *GitService) UpdateRef(ctx context.Context, owner string, repo string, r
 // DeleteRef deletes a ref from a repository.
 //
 // GitHub API docs: https://developer.github.com/v3/git/refs/#delete-a-reference
-func (s *GitService) DeleteRef(ctx context.Context, owner string, repo string, ref string) (*Response, error) {
+func (s *GitService) DeleteRef(owner string, repo string, ref string) (*Response, error) {
 	ref = strings.TrimPrefix(ref, "refs/")
 	u := fmt.Sprintf("repos/%v/%v/git/refs/%v", owner, repo, ref)
 	req, err := s.client.NewRequest("DELETE", u, nil)
@@ -159,5 +158,5 @@ func (s *GitService) DeleteRef(ctx context.Context, owner string, repo string, r
 		return nil, err
 	}
 
-	return s.client.Do(ctx, req, nil)
+	return s.client.Do(req, nil)
 }

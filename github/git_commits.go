@@ -6,7 +6,6 @@
 package github
 
 import (
-	"context"
 	"fmt"
 	"time"
 )
@@ -59,7 +58,7 @@ func (c CommitAuthor) String() string {
 // GetCommit fetchs the Commit object for a given SHA.
 //
 // GitHub API docs: https://developer.github.com/v3/git/commits/#get-a-commit
-func (s *GitService) GetCommit(ctx context.Context, owner string, repo string, sha string) (*Commit, *Response, error) {
+func (s *GitService) GetCommit(owner string, repo string, sha string) (*Commit, *Response, error) {
 	u := fmt.Sprintf("repos/%v/%v/git/commits/%v", owner, repo, sha)
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
@@ -70,7 +69,7 @@ func (s *GitService) GetCommit(ctx context.Context, owner string, repo string, s
 	req.Header.Set("Accept", mediaTypeGitSigningPreview)
 
 	c := new(Commit)
-	resp, err := s.client.Do(ctx, req, c)
+	resp, err := s.client.Do(req, c)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -94,7 +93,7 @@ type createCommit struct {
 // the authenticated user’s information and the current date.
 //
 // GitHub API docs: https://developer.github.com/v3/git/commits/#create-a-commit
-func (s *GitService) CreateCommit(ctx context.Context, owner string, repo string, commit *Commit) (*Commit, *Response, error) {
+func (s *GitService) CreateCommit(owner string, repo string, commit *Commit) (*Commit, *Response, error) {
 	u := fmt.Sprintf("repos/%v/%v/git/commits", owner, repo)
 
 	body := &createCommit{}
@@ -119,7 +118,7 @@ func (s *GitService) CreateCommit(ctx context.Context, owner string, repo string
 	}
 
 	c := new(Commit)
-	resp, err := s.client.Do(ctx, req, c)
+	resp, err := s.client.Do(req, c)
 	if err != nil {
 		return nil, resp, err
 	}
